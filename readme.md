@@ -1,4 +1,4 @@
-# 🚀 Deploy a Full-Stack React + Java Application on DigitalOcean
+# 🚀 Deploy a Java Application on DigitalOcean
 
 This repository contains a application built with **React** and **Java**.
 
@@ -124,3 +124,97 @@ su - deploy
 From here on, run all commands as `deploy` instead of `root`.
 
 
+---
+
+## 6. Install Java 17
+
+Update the package list:
+
+```bash
+sudo apt update
+```
+
+Install Java 17:
+
+```bash
+sudo apt install openjdk-17-jre-headless
+```
+
+Verify the installation:
+
+```bash
+java -version
+```
+
+---
+
+## 7. Build the Java Backend Locally
+
+On your local machine, from the backend project directory:
+
+```bash
+gradle build
+```
+
+Make sure your `.gitignore` includes:
+
+```
+.gradle/
+build/
+```
+
+This keeps build artifacts out of version control.
+
+---
+
+## 8. Transfer the JAR to the Droplet
+
+Replace `YOUR_DROPLET_IP` with your Droplet's IP address, and `deploy` with whichever user you created in [step 5](#5-create-a-non-root-user):
+
+```bash
+scp build/libs/project-java-digitalocean.jar deploy@YOUR_DROPLET_IP:/home/deploy
+```
+
+---
+
+## 9. Run the Java Application
+
+SSH into the server as your new user (if not already connected):
+
+```bash
+ssh deploy@YOUR_DROPLET_IP
+```
+
+Run the JAR:
+
+```bash
+java -jar project-java-digitalocean.jar
+```
+
+This runs the app in the foreground — it will stop if you close the SSH session. For a persistent deployment, run it in the background with `nohup`, or better, manage it as a `systemd` service:
+
+```bash
+nohup java -jar project-java-digitalocean.jar > app.log 2>&1 &
+```
+
+Your backend is now running on port `7071`.
+
+---
+
+## 10. Open the Application in a Browser
+
+Visit:
+
+```
+http://YOUR_DROPLET_IP:7071
+```
+
+If the page loads, the deployment was successful.
+
+---
+
+## Author
+
+**Namgel Dorjee**
+- GitHub: [@dor-jee](https://github.com/dor-jee)
+- LinkedIn: [Dorjee](https://www.linkedin.com/in/namgeldorjee/)
